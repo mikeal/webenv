@@ -1,0 +1,13 @@
+README
+setup.py
+test/test_fileserver.py
+test/test_responses.py
+webenv/__init__.py
+webenv/rest.py
+webenv.egg-info/PKG-INFO
+webenv.egg-info/SOURCES.txt
+webenv.egg-info/dependency_links.txt
+webenv.egg-info/entry_points.txt
+webenv.egg-info/top_level.txt
+webenv/applications/__init__.py
+webenv/applications/file_server.py

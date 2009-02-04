@@ -1,0 +1,4 @@
+
+          [console_scripts]
+          webenv = webenv.cli:main
+        
