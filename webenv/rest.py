@@ -1,4 +1,4 @@
-from webenv import Request, Response
+from webenv import Request, Response, Response404
 
 class RestApplication(object):
     def __init__(self):
@@ -36,7 +36,7 @@ class RestApplication(object):
             
     def handler(self, request, *path):
         if not hasattr(self, request.method):
-            return Response404("No "+request.method+" resource for "+self.ns)
+            return Response404("No "+request.method+" resource for "+request.reconstructed_url)
         return getattr(self, request.method)(request, *path)
 
     def add_resource(self, ns, rest_application):

@@ -35,8 +35,11 @@ class Body(object):
         self._body_data = None
     def __str__(self):
         if self._body_data is None:
-            length = int(self.request.environ['CONTENT_LENGTH'])
-            self._body_data = self.request.environ['wsgi.input'].read(length)
+            if self.request.environ.get('CONTENT_LENGTH'):
+                length = int(self.request.environ['CONTENT_LENGTH'])
+                self._body_data = self.request.environ['wsgi.input'].read(length)
+            else:
+                self._body_data = ''
         return self._body_data
     __unicode__ = __str__
 
@@ -122,7 +125,7 @@ class Response(object):
     def add_header(self, n, v):
         self.headers.append((n,v,))
         
-class HtmlResponse(object):
+class HtmlResponse(Response):
     content_type = 'text/html'
         
 class FileResponse(Response):
