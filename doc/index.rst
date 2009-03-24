@@ -210,6 +210,7 @@
          class PagesApplication(RestApplication):
              def GET(self, request, *args):
                  print "Pages::", args
+                 return Response()
          
          class IndexApplication(RestApplication):
              def GET(self, request, *args):

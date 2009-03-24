@@ -234,6 +234,7 @@ used, if not size will not be set and the <cite>content-length</cite> header wil
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">PagesApplication</span><span class="p">(</span><span class="n">RestApplication</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="k">print</span> <span class="s">&quot;Pages::&quot;</span><span class="p">,</span> <span class="n">args</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">()</span>
 
 <span class="k">class</span> <span class="nc">IndexApplication</span><span class="p">(</span><span class="n">RestApplication</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
