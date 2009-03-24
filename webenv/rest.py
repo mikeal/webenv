@@ -14,7 +14,7 @@ class RestApplication(object):
         elif environ['PATH_INFO'].startswith('http'):
             path = [p for p in urlparse(environ['PATH_INFO']).path.split('/') if len(p) is not 0]
         else:
-            raise Exception('Cannot read PATH_INFO '+request.reconstructed_url)
+            raise Exception('Cannot read PATH_INFO '+request.full_uri)
         
         if len(path) is 0:
             response = self.handler(request)
@@ -36,7 +36,7 @@ class RestApplication(object):
             
     def handler(self, request, *path):
         if not hasattr(self, request.method):
-            return Response404("No "+request.method+" resource for "+request.reconstructed_url)
+            return Response404("No "+request.method+" resource for "+request.full_uri)
         return getattr(self, request.method)(request, *path)
 
     def add_resource(self, ns, rest_application):

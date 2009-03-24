@@ -42,6 +42,10 @@ class Body(object):
                 self._body_data = ''
         return self._body_data
     __unicode__ = __str__
+    def __len__(self):
+        if self.request.environ.get('CONTENT_LENGTH'):
+            return int(self.request.environ['CONTENT_LENGTH'])
+        return len(str(self))
 
 class Headers(object):
     def __init__(self, request):
@@ -64,12 +68,18 @@ class Headers(object):
 
 class Request(object):
     def __init__(self, environ, start_response):
-        self.reconstructed_url = reconstruct_url(environ)
         self.environ = environ; self._start_response = start_response
         self._body = None
         self._method = None
         self._headers = None
+        self._full_uri = None
         self._start_response_run = False
+    
+    @property
+    def full_uri(self):
+        if self._full_uri is None:
+            self._full_uri = reconstruct_url(environ)
+        return self._full_uri
         
     def start_response(self, status, headers):
         if not self._start_response_run:
@@ -120,7 +130,10 @@ class Response(object):
     def __iter__(self):
         self.headers.append(('content-type', self.content_type,))
         self.request.start_response(self.status, self.headers)
-        yield self.body
+        if not hasattr(self.body.__iter__):
+            yield self.body
+        for x in self.body:
+            yield x
         
     def add_header(self, n, v):
         self.headers.append((n,v,))
@@ -131,6 +144,7 @@ class HtmlResponse(Response):
 class FileResponse(Response):
     readsize = 1024
     size = None
+    content_type = None
     
     content_type_table = {'js': 'application/x-javascript', 'html': 'text/html; charset=utf-8',
                           'fallback':'text/plain; charset=utf-8', 'ogg': 'application/ogg', 
@@ -164,7 +178,8 @@ class FileResponse(Response):
         self.add_header('Pragma', 'no-cache')
         if self.size is not None:
             self.add_header('Content-Length', str(self.size))
-        self.content_type = self.guess_content_type(self.request.reconstructed_url)            
+        if self.content_type is None:
+            self.content_type = self.guess_content_type(self.request.full_uri)            
         self.add_header('content-type', self.content_type)
         self.request.start_response('200 Ok', self.headers)     
         output = '\n'
@@ -172,9 +187,9 @@ class FileResponse(Response):
             output = self.f.read(self.readsize)
             yield output
 
-    def guess_content_type(self, path_info):
+    def guess_content_type(self, path):
         """Make a best guess at the content type"""
-        extention_split = path_info.split('.')
+        extention_split = path .split('.')
 
         if self.content_type_table.has_key(extention_split[-1]):
             return self.content_type_table[extention_split[-1]]

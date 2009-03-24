@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>webenv &#8212; WSGI request, response and application abstractions. &mdash; webenv v0.4 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.4',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="webenv v0.4 documentation" href="" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li><a href="">webenv v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="module-webenv">
+<h1><tt class="xref docutils literal"><span class="pre">webenv</span></tt> &#8212; WSGI request, response and application abstractions.<a class="headerlink" href="#module-webenv" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="webenv.Application">
+<!--[webenv.Application]-->class <tt class="descclassname">webenv.</tt><tt class="descname">Application</tt><a class="headerlink" href="#webenv.Application" title="Permalink to this definition">¶</a></dt>
+<dd><p>WSGI application abstraction baseclass.</p>
+<dl class="method">
+<dt id="webenv.Application.handler">
+<!--[webenv.Application.handler]--><tt class="descname">handler</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#webenv.Application.handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method must be implemented by subclass.</p>
+<p>Takes a <a title="webenv.Request" class="reference internal" href="#webenv.Request"><tt class="xref docutils literal"><span class="pre">Request</span></tt></a> instance and returns a <a title="webenv.Response" class="reference internal" href="#webenv.Response"><tt class="xref docutils literal"><span class="pre">Response</span></tt></a> instance.</p>
+<p>Simplest usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">webenv</span> <span class="kn">import</span> <span class="n">Application</span>
+
+<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s">&#39;/&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HtmlResponse</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="webenv.Request">
+<!--[webenv.Request]-->class <tt class="descclassname">webenv.</tt><tt class="descname">Request</tt><big>(</big><em>environ</em>, <em>start_response</em><big>)</big><a class="headerlink" href="#webenv.Request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request object.</p>
+<p>Environ keys are accessible using dictionary style syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">request</span><span class="p">[</span><span class="s">&#39;SERVER_PROTOCOL&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="webenv.Request.body">
+<!--[webenv.Request.body]--><tt class="descname">body</tt><a class="headerlink" href="#webenv.Request.body" title="Permalink to this definition">¶</a></dt>
+<dd><a title="webenv.Body" class="reference internal" href="#webenv.Body"><tt class="xref docutils literal"><span class="pre">Body</span></tt></a> instance.</dd></dl>
+
+<dl class="attribute">
+<dt id="webenv.Request.method">
+<!--[webenv.Request.method]--><tt class="descname">method</tt><a class="headerlink" href="#webenv.Request.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP request method:</p>
+<div class="highlight-python"><pre>if request.method == "GET":</pre>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webenv.Request.headers">
+<!--[webenv.Request.headers]--><tt class="descname">headers</tt><a class="headerlink" href="#webenv.Request.headers" title="Permalink to this definition">¶</a></dt>
+<dd><a title="webenv.Headers" class="reference internal" href="#webenv.Headers"><tt class="xref docutils literal"><span class="pre">Headers</span></tt></a> instance.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="webenv.Body">
+<!--[webenv.Body]-->class <tt class="descclassname">webenv.</tt><tt class="descname">Body</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#webenv.Body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request Body Object.</p>
+<p><a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/functions.html#str"><tt class="xref docutils literal"><span class="pre">str()</span></tt></a> must be called on request object to get a string:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">body</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="webenv.Headers">
+<!--[webenv.Headers]-->class <tt class="descclassname">webenv.</tt><tt class="descname">Headers</tt><big>(</big><em>request</em><big>)</big><a class="headerlink" href="#webenv.Headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP headers object.</p>
+<p>Lookup headers using dictionary style syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&quot;accept-encoding&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Note: make sure this is done caseless.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="webenv.Response">
+<!--[webenv.Response]-->class <tt class="descclassname">webenv.</tt><tt class="descname">Response</tt><big>(</big><span class="optional">[</span><em>body</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#webenv.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP Response object</p>
+<dl class="attribute">
+<dt id="webenv.Response.status">
+<!--[webenv.Response.status]--><tt class="descname">status</tt><a class="headerlink" href="#webenv.Response.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP status, must be full response string not an integer status code.</p>
+<p>Default is <cite>&#8220;200 Ok&#8221;</cite></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webenv.Response.content_type">
+<!--[webenv.Response.content_type]--><tt class="descname">content_type</tt><a class="headerlink" href="#webenv.Response.content_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP content-type, default is <cite>&#8220;text/plain&#8221;</cite>.</p>
+<p>A list of acceptable content-types is <a class="reference external" href="http://en.wikipedia.org/wiki/Internet_media_type">http://en.wikipedia.org/wiki/Internet_media_type</a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webenv.Response.body">
+<!--[webenv.Response.body]--><tt class="descname">body</tt><a class="headerlink" href="#webenv.Response.body" title="Permalink to this definition">¶</a></dt>
+<dd>HTTP response body. If value has an iterator the iterator will be used in the response
+objects iterator.</dd></dl>
+
+<dl class="method">
+<dt id="webenv.Response.add_header">
+<!--[webenv.Response.add_header]--><tt class="descname">add_header</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#webenv.Response.add_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a header to the HTTP response:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">response</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Cache-Controler&#39;</span><span class="p">,</span> <span class="s">&#39;no-cache&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="webenv.HtmlResponse">
+<!--[webenv.HtmlResponse]-->class <tt class="descclassname">webenv.</tt><tt class="descname">HtmlResponse</tt><big>(</big><em>body</em><big>)</big><a class="headerlink" href="#webenv.HtmlResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTML HTTP Response object. Subclass of <a title="webenv.Response" class="reference internal" href="#webenv.Response"><tt class="xref docutils literal"><span class="pre">Response</span></tt></a>.</p>
+<p>Subclass of <a title="webenv.Response" class="reference internal" href="#webenv.Response"><tt class="xref docutils literal"><span class="pre">Response</span></tt></a> with content_type <cite>&#8220;text/html&#8221;</cite>.</p>
+<p><cite>body</cite> should be a string of HTML.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="webenv.FileResponse">
+<!--[webenv.FileResponse]-->class <tt class="descclassname">webenv.</tt><tt class="descname">FileResponse</tt><big>(</big><em>file</em><big>)</big><a class="headerlink" href="#webenv.FileResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>File wrapper for HTTP Responses. Subclass of <a title="webenv.Response" class="reference internal" href="#webenv.Response"><tt class="xref docutils literal"><span class="pre">Response</span></tt></a>.</p>
+<p>If <em>file</em> is a <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/functions.html#str"><tt class="xref docutils literal"><span class="pre">str()</span></tt></a> or a <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/dev/library/functions.html#unicode"><tt class="xref docutils literal"><span class="pre">unicode()</span></tt></a> object it is assumed to a path to a local
+filename and will be resolved. Any other type is assumed to be a
+<a class="reference external" href="http://docs.python.org/library/stdtypes.html#file-objects">File-like object</a>.</p>
+<p>The content-type is guessed by looking at the extension at the end of the requestion uri.
+You can override this by setting the <a title="webenv.Response.content_type" class="reference internal" href="#webenv.Response.content_type"><tt class="xref docutils literal"><span class="pre">Response.content_type</span></tt></a>.</p>
+<dl class="attribute">
+<dt id="webenv.FileResponse.readsize">
+<!--[webenv.FileResponse.readsize]--><tt class="descname">readsize</tt><a class="headerlink" href="#webenv.FileResponse.readsize" title="Permalink to this definition">¶</a></dt>
+<dd>Size of the read chunks for the response iterator. Default is <cite>1024</cite>.</dd></dl>
+
+<dl class="attribute">
+<dt id="webenv.FileResponse.size">
+<!--[webenv.FileResponse.size]--><tt class="descname">size</tt><a class="headerlink" href="#webenv.FileResponse.size" title="Permalink to this definition">¶</a></dt>
+<dd>Optional attribute. If a filename is given to the constructor the file size will be
+used, if not size will not be set and the <cite>content-length</cite> header will not be set.</dd></dl>
+
+<dl class="method">
+<dt id="webenv.FileResponse.guess_content_type">
+<!--[webenv.FileResponse.guess_content_type]--><tt class="descname">guess_content_type</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#webenv.FileResponse.guess_content_type" title="Permalink to this definition">¶</a></dt>
+<dd>Guess the <a title="webenv.Response.content_type" class="reference internal" href="#webenv.Response.content_type"><tt class="xref docutils literal"><span class="pre">Response.content_type</span></tt></a> given a specific path.</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="module-webenv.rest">
+<h2><tt class="xref docutils literal"><span class="pre">webenv.rest</span></tt> &#8212; Resource based application abstractions.<a class="headerlink" href="#module-webenv.rest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="webenv.rest.RestApplication">
+<!--[webenv.rest.RestApplication]-->class <tt class="descclassname">webenv.rest.</tt><tt class="descname">RestApplication</tt><a class="headerlink" href="#webenv.rest.RestApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>REST Application.</p>
+<p>Intended to be subclassed with the author defining methods <a title="webenv.rest.RestApplication.GET" class="reference internal" href="#webenv.rest.RestApplication.GET"><tt class="xref docutils literal"><span class="pre">GET()</span></tt></a>, <a title="webenv.rest.RestApplication.POST" class="reference internal" href="#webenv.rest.RestApplication.POST"><tt class="xref docutils literal"><span class="pre">POST()</span></tt></a>,
+<a title="webenv.rest.RestApplication.PUT" class="reference internal" href="#webenv.rest.RestApplication.PUT"><tt class="xref docutils literal"><span class="pre">PUT()</span></tt></a> and/or other HTTP methods.</p>
+<dl class="method">
+<dt id="webenv.rest.RestApplication.GET">
+<!--[webenv.rest.RestApplication.GET]--><tt class="descname">GET</tt><big>(</big><em>request</em><span class="optional">[</span>, <em>*rest_args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#webenv.rest.RestApplication.GET" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP GET handler. Not implemented by baseclass, optionally implemented by subclass.</p>
+<p><em>request</em> is an instance of <tt class="xref docutils literal"><span class="pre">Request</span></tt>.</p>
+<p>The request path is broken up and sent to rest_args:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyRestApplication</span><span class="p">(</span><span class="n">RestApplication</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">print</span> <span class="n">action</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">method</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Creates an application that prints:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://localhost/action1/testuser&quot;</span><span class="p">)</span>
+<span class="go">action1 testuser None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://localhost/a/testuser/another.txt&quot;</span><span class="p">)</span>
+<span class="go">a testuser another.txt</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="webenv.rest.RestApplication.PUT">
+<!--[webenv.rest.RestApplication.PUT]--><tt class="descname">PUT</tt><big>(</big><em>request</em><span class="optional">[</span>, <em>*rest_args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#webenv.rest.RestApplication.PUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP PUT handler. Not implemented by baseclass, optionally implemented by subclass.</p>
+<p>Usage identical to <a title="webenv.rest.RestApplication.GET" class="reference internal" href="#webenv.rest.RestApplication.GET"><tt class="xref docutils literal"><span class="pre">GET()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="webenv.rest.RestApplication.POST">
+<!--[webenv.rest.RestApplication.POST]--><tt class="descname">POST</tt><big>(</big><em>request</em><span class="optional">[</span>, <em>*rest_args</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#webenv.rest.RestApplication.POST" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP POST handler. Not implemented by baseclass, optionally implemented by subclass.</p>
+<p>Usage identical to <a title="webenv.rest.RestApplication.GET" class="reference internal" href="#webenv.rest.RestApplication.GET"><tt class="xref docutils literal"><span class="pre">GET()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="webenv.rest.RestApplication.add_namespace">
+<!--[webenv.rest.RestApplication.add_namespace]--><tt class="descname">add_namespace</tt><big>(</big><em>name</em>, <em>rest_application</em><big>)</big><a class="headerlink" href="#webenv.rest.RestApplication.add_namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a REST application to a specific namespace.</p>
+<p>This method allows you to reuse <a title="webenv.rest.RestApplication" class="reference internal" href="#webenv.rest.RestApplication"><tt class="xref docutils literal"><span class="pre">RestApplication</span></tt></a> subclasses:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">PagesApplication</span><span class="p">(</span><span class="n">RestApplication</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Pages::&quot;</span><span class="p">,</span> <span class="n">args</span>
+
+<span class="k">class</span> <span class="nc">IndexApplication</span><span class="p">(</span><span class="n">RestApplication</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Index::&quot;</span><span class="p">,</span> <span class="n">args</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">()</span>
+
+<span class="n">index_application</span> <span class="o">=</span> <span class="n">IndexApplication</span><span class="p">()</span>
+<span class="n">index_application</span><span class="o">.</span><span class="n">add_namespace</span><span class="p">(</span><span class="s">&quot;pages&quot;</span><span class="p">,</span> <span class="n">PagesApplication</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>And now <cite>index_application</cite> will print:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://localhost/blah&quot;</span><span class="p">)</span>
+<span class="go">Index:: (&#39;blah&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://localhost/pages/aa/bb/cc&quot;</span><span class="p">)</span>
+<span class="go">Pages:: (&#39;aa&#39;, &#39;bb&#39;, &#39;bb&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-webenv.applications">
+<h2><tt class="xref docutils literal"><span class="pre">webenv.applications</span></tt> &#8212; Prebuilt webenv applications.<a class="headerlink" href="#module-webenv.applications" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="webenv.applications.FileServerApplication">
+<!--[webenv.applications.FileServerApplication]-->class <tt class="descclassname">webenv.applications.</tt><tt class="descname">FileServerApplication</tt><big>(</big><em>basepath</em><big>)</big><a class="headerlink" href="#webenv.applications.FileServerApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>File serving application.</p>
+<p><em>basepath</em> is an absolute path to the base directory to be served.</p>
+<p>Is a subclass of <a title="webenv.rest.RestApplication" class="reference internal" href="#webenv.rest.RestApplication"><tt class="xref docutils literal"><span class="pre">webenv.rest.RestApplication</span></tt></a> so it can be added as a namespace:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">RestApplication</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="s">&quot;/var/static/index.html&quot;</span><span class="p">)</span>
+
+<span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
+<span class="n">application</span><span class="o">.</span><span class="n">add_namespace</span><span class="p">(</span><span class="s">&quot;css&quot;</span><span class="p">,</span> <span class="n">FileServerApplication</span><span class="p">(</span><span class="s">&quot;/var/css&quot;</span><span class="p">))</span>
+<span class="n">application</span><span class="o">.</span><span class="n">add_namespace</span><span class="p">(</span><span class="s">&quot;images&quot;</span><span class="p">,</span> <span class="n">FileServerApplication</span><span class="p">(</span><span class="s">&quot;/var/images&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">webenv</span></tt> &#8212; WSGI request, response and application abstractions.</a><ul>
+<li><a class="reference external" href="#module-webenv.rest"><tt class="docutils literal"><span class="pre">webenv.rest</span></tt> &#8212; Resource based application abstractions.</a></li>
+<li><a class="reference external" href="#module-webenv.applications"><tt class="docutils literal"><span class="pre">webenv.applications</span></tt> &#8212; Prebuilt webenv applications.</a></li>
+</ul>
+</li>
+</ul>
+
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt">Show Source</a></li>
+            </ul>
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li><a href="">webenv v0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Mikeal Rogers &lt;mikeal.rogers@gmail.com&gt;.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>
