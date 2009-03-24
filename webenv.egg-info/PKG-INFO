@@ -1,11 +1,11 @@
 Metadata-Version: 1.0
 Name: webenv
-Version: 0.1
+Version: 0.4
 Summary: A thin abstraction layer on top of wsgi providing request, response and application abstractions
 Home-page: UNKNOWN
-Author: Mozilla, Mikeal Rogers
+Author: Mikeal Rogers
 Author-email: mikeal.rogers@gmail.com
-License: http://www.mozilla.org/MPL/MPL-1.1.html
+License: MPL 1.1/GPL 2.0/LGPL 2.1
 Description: UNKNOWN
 Platform: Any
 Classifier: Development Status :: 4 - Beta
