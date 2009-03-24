@@ -78,7 +78,7 @@ class Request(object):
     @property
     def full_uri(self):
         if self._full_uri is None:
-            self._full_uri = reconstruct_url(environ)
+            self._full_uri = reconstruct_url(self.environ)
         return self._full_uri
         
     def start_response(self, status, headers):
@@ -130,10 +130,11 @@ class Response(object):
     def __iter__(self):
         self.headers.append(('content-type', self.content_type,))
         self.request.start_response(self.status, self.headers)
-        if not hasattr(self.body.__iter__):
+        if not hasattr(self.body, "__iter__"):
             yield self.body
-        for x in self.body:
-            yield x
+        else:
+            for x in self.body:
+                yield x
         
     def add_header(self, n, v):
         self.headers.append((n,v,))
