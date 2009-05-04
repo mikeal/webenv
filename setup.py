@@ -62,7 +62,7 @@ setup(name=PACKAGE_NAME,
       classifiers=['Development Status :: 4 - Beta',
                    'Environment :: Console',
                    'Intended Audience :: Developers',
-                   'License :: OSI Approved :: Apache Software License',
+                   'License :: OSI Approved :: MPL',
                    'Operating System :: OS Independent',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                   ]

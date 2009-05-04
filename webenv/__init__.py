@@ -1,5 +1,6 @@
 from urlparse import urlparse
 import traceback
+import cgi
 import os, sys
 
 def reconstruct_url(environ):
@@ -33,6 +34,8 @@ class Body(object):
         self.request = request
         self.environ = request.environ
         self._body_data = None
+        if self.request.environ['CONTENT_TYPE'] == "application/x-www-form-urlencoded":
+            self.form = cgi.parse_qs(str(self))
     def __str__(self):
         if self._body_data is None:
             if self.request.environ.get('CONTENT_LENGTH'):
@@ -46,6 +49,15 @@ class Body(object):
         if self.request.environ.get('CONTENT_LENGTH'):
             return int(self.request.environ['CONTENT_LENGTH'])
         return len(str(self))
+        
+    def __getitem__(self, name):
+        if not hasattr(self, 'form'):
+            raise Exception("This was not an urlencoded form POST.")
+        result = self.form[name]
+        if type(result) is list and len(result) is 1:
+            return result[0]
+        else:
+            return result
 
 class Headers(object):
     def __init__(self, request):
@@ -111,8 +123,9 @@ class Request(object):
         return self._headers
 
 class Application(object):
+    request_class = Request
     def __call__(self, environ, start_response):
-        request = Request(environ, start_response)
+        request = self.request_class(environ, start_response)
         response = self.handler(request)
         response.request = request
         return response
@@ -206,6 +219,9 @@ class Response303(Response):
             
 class Response404(Response):
     status = '404 Not Found'
+
+class Response201(Response):
+    status = '201 Created'
 
 ResponseNotFound = Response404
     

@@ -251,7 +251,7 @@
       application.add_namespace("css", FileServerApplication("/var/css"))
       application.add_namespace("images", FileServerApplication("/var/images"))
       
-   
+   ls
 
 
 

@@ -1,10 +1,11 @@
 from webenv import Request, Response, Response404
 
 class RestApplication(object):
+    request_class = Request
     def __init__(self):
         self.rest_resources = {}
     def __call__(self, environ, start_response):
-        request = Request(environ, start_response)
+        request = self.request_class(environ, start_response)
         
         if len(environ['PATH_INFO']) is 0:
             environ['PATH_INFO'] = '/'
