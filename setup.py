@@ -41,7 +41,7 @@ desc = """A thin abstraction layer on top of wsgi providing request, response an
 summ = """A thin abstraction layer on top of wsgi providing request, response and application abstractions"""
 
 PACKAGE_NAME = "webenv"
-PACKAGE_VERSION = "0.4"
+PACKAGE_VERSION = "0.5"
 
 setup(name=PACKAGE_NAME,
       version=PACKAGE_VERSION,
@@ -62,7 +62,7 @@ setup(name=PACKAGE_NAME,
       classifiers=['Development Status :: 4 - Beta',
                    'Environment :: Console',
                    'Intended Audience :: Developers',
-                   'License :: OSI Approved :: MPL',
+                   'License :: OSI Approved :: Mozilla Public License 1.1 (MPL 1.1)',
                    'Operating System :: OS Independent',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                   ]
