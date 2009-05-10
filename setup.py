@@ -41,7 +41,7 @@ desc = """A thin abstraction layer on top of wsgi providing request, response an
 summ = """A thin abstraction layer on top of wsgi providing request, response and application abstractions"""
 
 PACKAGE_NAME = "webenv"
-PACKAGE_VERSION = "0.5"
+PACKAGE_VERSION = "0.5.1"
 
 setup(name=PACKAGE_NAME,
       version=PACKAGE_VERSION,

@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: webenv
-Version: 0.5
+Version: 0.5.1
 Summary: A thin abstraction layer on top of wsgi providing request, response and application abstractions
 Home-page: UNKNOWN
 Author: Mikeal Rogers
