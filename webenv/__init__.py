@@ -3,6 +3,11 @@ import traceback
 import cgi
 import os, sys
 
+try:
+    import simplejson
+except:
+    import json as simplejson
+
 def reconstruct_url(environ):
     # From WSGI spec, PEP 333
     from urllib import quote
@@ -59,6 +64,11 @@ class Body(object):
         else:
             return result
 
+    def keys(self):
+        if not hasattr(self, 'form'):
+            raise Exception("This was not an urlencoded form POST.")
+        return self.form.keys()
+
 class Headers(object):
     def __init__(self, request):
         self.request = request
@@ -85,6 +95,7 @@ class Request(object):
         self._method = None
         self._headers = None
         self._full_uri = None
+        self._query = None
         self._start_response_run = False
     
     @property
@@ -103,6 +114,15 @@ class Request(object):
         return self.start_response(*args, **kwargs)
     def __getitem__(self, key):
         return self.environ[key]
+        
+    @property
+    def query(self):
+        if self._query is None:
+            self._query = cgi.parse_qs(self.environ.get('QUERY_STRING'))
+            for k, v in self._query.items():
+                if len(v) is 1:
+                    self._query[k] = v[0]
+        return self._query
     
     @property
     def body(self):
@@ -154,6 +174,12 @@ class Response(object):
         
 class HtmlResponse(Response):
     content_type = 'text/html'
+    
+class JsonResponse(Response):
+    content_type = 'application/json'
+    def __init__(self, body):
+        self.body = simplejson.dumps(body)
+        self.headers = []
         
 class FileResponse(Response):
     readsize = 1024
