@@ -1,4 +1,5 @@
 from webenv import Request, Response, Response404
+from urlparse import urlparse
 
 class RestApplication(object):
     request_class = Request
@@ -7,13 +8,15 @@ class RestApplication(object):
     def __call__(self, environ, start_response):
         request = self.request_class(environ, start_response)
         
-        if len(environ['PATH_INFO']) is 0:
-            environ['PATH_INFO'] = '/'
+        path = environ['SCRIPT_NAME'] + environ['PATH_INFO']
         
-        if environ['PATH_INFO'].startswith('/'):
-            path = [p for p in environ['PATH_INFO'].split('/') if len(p) is not 0]
+        if len(path) is 0:
+            path = '/'
+        
+        if path.startswith('/'):
+            path = [p for p in path.split('/') if len(p) is not 0]
         elif environ['PATH_INFO'].startswith('http'):
-            path = [p for p in urlparse(environ['PATH_INFO']).path.split('/') if len(p) is not 0]
+            path = [p for p in urlparse(path).path.split('/') if len(p) is not 0]
         else:
             raise Exception('Cannot read PATH_INFO '+request.full_uri)
         
