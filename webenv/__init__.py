@@ -41,6 +41,9 @@ class Body(object):
         self._body_data = None
         if self.request.environ['CONTENT_TYPE'] == "application/x-www-form-urlencoded":
             self.form = cgi.parse_qs(str(self))
+            for k, v in self.form.items():
+                if len(v) is 1:
+                    self.form[k] = v[0]
     def __str__(self):
         if self._body_data is None:
             if self.request.environ.get('CONTENT_LENGTH'):
@@ -69,24 +72,14 @@ class Body(object):
             raise Exception("This was not an urlencoded form POST.")
         return self.form.keys()
 
-class Headers(object):
-    def __init__(self, request):
-        self.request = request
-        self.environ = request.environ
-        self._hdict = {}
-        for k, v in self.environ.items():
+class Headers(dict):
+    def __init__(self, request, *args, **kwargs):
+        object.__setattr__(self, 'request', request)
+        environ = request.environ
+        for k, v in environ.items():
             if k.startswith('HTTP_'):
-                k = k.replace('HTTP_', '', 1).swapcase().replace('_', '-')
-                if not self._hdict.has_key(k): self._hdict[k] = v
-        self.__dict__ = self._hdict
-    def __getitem__(self, key):
-        return self._hdict[key]
-    
-    def __str__(self):
-        return str(self.__dict__)
-    
-    def items(self):
-        return self._hdict.items()
+                k = k.replace('HTTP_', '', 1).lower().replace('_', '-')
+                if not self.has_key(k): self[k] = v
 
 class Request(object):
     def __init__(self, environ, start_response):
@@ -242,6 +235,15 @@ class Response303(Response):
         self.headers = []
         self.add_header('location', uri)
         self.body = 'Redirecting to new resource at '+uri
+
+class Response302(Response):
+    status = '302 See Other'
+    def __init__(self, uri):
+        self.headers = []
+        self.add_header('location', uri)
+        self.body = 'Redirecting to a temp resource at '+uri
+
+
             
 class Response404(Response):
     status = '404 Not Found'
@@ -255,6 +257,15 @@ class Response403(Response):
     status = '403 Forbidden'
     
 ResponseForbidden = Response403
+
+class Response401(Response):
+    status = "401 Unauthorized"
+    def __init__(self, h):
+        self.headers = []
+        self.body = ''
+        self.add_header('www-authenticate', h)
+    
+ResponseUnauthorized = Response401
 
 class Response405(Response):
     status = '405 Method Not Allowed'
