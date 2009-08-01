@@ -99,7 +99,9 @@ class Request(object):
         
     def start_response(self, status, headers):
         if not self._start_response_run:
+            headers = [(k, str(v)) for k, v in headers] # Convert header values to ascii
             result = self._start_response(status, headers)    
+            print 'done'
             self._start_response_run = True
             return result
     
@@ -234,16 +236,14 @@ class Response303(Response):
     def __init__(self, uri):
         self.headers = []
         self.add_header('location', uri)
-        self.body = 'Redirecting to new resource at '+uri
+        self.body = 'Redirecting to new resource at '+str(uri)
 
 class Response302(Response):
     status = '302 See Other'
     def __init__(self, uri):
         self.headers = []
         self.add_header('location', uri)
-        self.body = 'Redirecting to a temp resource at '+uri
-
-
+        self.body = 'Redirecting to a temp resource at '+str(uri)
             
 class Response404(Response):
     status = '404 Not Found'
