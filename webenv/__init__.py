@@ -88,6 +88,8 @@ class Request(object):
         self._method = None
         self._headers = None
         self._full_uri = None
+        self._url = None
+        self._host = None
         self._query = None
         self._start_response_run = False
     
@@ -136,6 +138,18 @@ class Request(object):
         if self._headers is None:
             self._headers = Headers(self)
         return self._headers
+        
+    @property
+    def url(self):
+        if self._url is None:
+            self._url = urlparse(self.full_uri)
+        return self._url
+        
+    @property
+    def host(self):
+        if self._host is None:
+            self._host = self.url.scheme+"://"+self.url.netloc
+        return self._host
 
 class Application(object):
     request_class = Request
@@ -157,6 +171,8 @@ class Response(object):
         
     def __iter__(self):
         self.headers.append(('content-type', self.content_type,))
+        if hasattr(self, "content_length"):
+            self.headers.append('content-length', self.content_length)
         self.request.start_response(self.status, self.headers)
         if not hasattr(self.body, "__iter__"):
             yield self.body
@@ -169,6 +185,11 @@ class Response(object):
         
 class HtmlResponse(Response):
     content_type = 'text/html'
+    def __init__(self, body):
+        super(HtmlResponse, self).__init__(self)
+        if type(body) is str:
+            self.content_length = len(body)
+        self.body = body
     
 class JsonResponse(Response):
     content_type = 'application/json'
