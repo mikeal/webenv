@@ -172,7 +172,7 @@ class Response(object):
     def __iter__(self):
         self.headers.append(('content-type', self.content_type,))
         if hasattr(self, "content_length"):
-            self.headers.append('content-length', self.content_length)
+            self.headers.append(('content-length', self.content_length,))
         self.request.start_response(self.status, self.headers)
         if not hasattr(self.body, "__iter__"):
             yield self.body
