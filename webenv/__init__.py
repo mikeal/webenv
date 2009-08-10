@@ -103,7 +103,6 @@ class Request(object):
         if not self._start_response_run:
             headers = [(k, str(v)) for k, v in headers] # Convert header values to ascii
             result = self._start_response(status, headers)    
-            print 'done'
             self._start_response_run = True
             return result
     
