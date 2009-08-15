@@ -82,6 +82,8 @@ class Headers(dict):
                 if not self.has_key(k): self[k] = v
 
 class Request(object):
+    default_locale = 'en-us'
+    
     def __init__(self, environ, start_response):
         self.environ = environ; self._start_response = start_response
         self._body = None
@@ -149,6 +151,12 @@ class Request(object):
         if self._host is None:
             self._host = self.url.scheme+"://"+self.url.netloc
         return self._host
+        
+    @property
+    def locale(self):
+        if self._locale is None:
+            self._locale = self.headers.get('accept-language', self.default_locale).split(',')[0].lower()
+        return self._locale
 
 class Application(object):
     request_class = Request
