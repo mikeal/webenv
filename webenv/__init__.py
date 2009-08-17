@@ -39,14 +39,14 @@ class Body(object):
         self.request = request
         self.environ = request.environ
         self._body_data = None
-        if self.request.environ['CONTENT_TYPE'] == "application/x-www-form-urlencoded":
+        if self.request.environ.get('CONTENT_TYPE', None) == "application/x-www-form-urlencoded":
             self.form = cgi.parse_qs(str(self))
             for k, v in self.form.items():
                 if len(v) is 1:
                     self.form[k] = v[0]
     def __str__(self):
         if self._body_data is None:
-            if self.request.environ.get('CONTENT_LENGTH'):
+            if self.request.environ.get('CONTENT_LENGTH', None):
                 length = int(self.request.environ['CONTENT_LENGTH'])
                 self._body_data = self.request.environ['wsgi.input'].read(length)
             else:
@@ -54,7 +54,7 @@ class Body(object):
         return self._body_data
     __unicode__ = __str__
     def __len__(self):
-        if self.request.environ.get('CONTENT_LENGTH'):
+        if self.request.environ.get('CONTENT_LENGTH', None):
             return int(self.request.environ['CONTENT_LENGTH'])
         return len(str(self))
         
