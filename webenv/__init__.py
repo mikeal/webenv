@@ -80,6 +80,10 @@ class Headers(dict):
             if k.startswith('HTTP_'):
                 k = k.replace('HTTP_', '', 1).lower().replace('_', '-')
                 if not self.has_key(k): self[k] = v
+        if 'CONTENT_LENGTH' in environ and environ['CONTENT_LENGTH']:
+            self['content-length'] = str(environ['CONTENT_LENGTH'])
+        if 'CONTENT_TYPE' in environ:
+            self['content-type'] = environ['CONTENT_TYPE']
 
 class Request(object):
     default_locale = 'en-us'
