@@ -1,6 +1,6 @@
 import os
 from webenv.rest import RestApplication
-from webenv import Response404, ResponseForbidden, HtmlResponse, FileResponse
+from webenv import Response404, ResponseForbidden, HtmlResponse, FileResponse, Response201
 
 class FileServerApplication(RestApplication):
     write_enabled = False
@@ -31,4 +31,5 @@ class FileServerApplication(RestApplication):
                 f = open(os.path.join(self.path, serve_file), 'w')
             except Exception, e:
                 return TracebackResponse(e)
+            return Response201('created')
 

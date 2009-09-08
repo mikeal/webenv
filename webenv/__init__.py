@@ -104,7 +104,7 @@ class Request(object):
     def start_response(self, status, headers):
         if not self._start_response_run:
             headers = [(k, str(v)) for k, v in headers] # Convert header values to ascii
-            result = self._start_response(status, headers)    
+            result = self._start_response(status, headers)
             self._start_response_run = True
             return result
     
@@ -164,6 +164,7 @@ class Application(object):
         request = self.request_class(environ, start_response)
         response = self.handler(request)
         response.request = request
+        response.start_response()
         return response
         
 class Response(object):
@@ -175,12 +176,16 @@ class Response(object):
     def __init__(self, body=''):
         self.body = body
         self.headers = []
-        
-    def __iter__(self):
-        self.headers.append(('content-type', self.content_type,))
-        if hasattr(self, "content_length"):
+    
+    def start_response(self):
+        if len([(k, v) for k,v in self.headers if k == 'content-type']) is 0:
+            self.headers.append(('content-type', self.content_type,))
+        if hasattr(self, "content_length") and (
+           len([(k, v) for k,v in self.headers if k == 'content-length']) is 0):
             self.headers.append(('content-length', self.content_length,))
         self.request.start_response(self.status, self.headers)
+        
+    def __iter__(self):
         if not hasattr(self.body, "__iter__"):
             yield self.body
         else:
@@ -205,7 +210,6 @@ class JsonResponse(Response):
         self.headers = []
         
 class FileResponse(Response):
-    readsize = 1024
     size = None
     content_type = None
     
@@ -229,14 +233,18 @@ class FileResponse(Response):
     def __init__(self, f):
         if type(f) in [str, unicode]:
             self.size = os.path.getsize(f)
+            if self.size > 512000:
+                self.readsize = self.size / 100
+            else:
+                self.readsize = self.size
             if os.name == 'nt' or sys.platform == 'cygwin':
                 f = open(f, 'rb')
             else:
                 f = open(f, 'r')
         self.f = f        
         self.headers = []
-        
-    def __iter__(self):
+    
+    def start_response(self):
         self.add_header('Cache-Controler', 'no-cache')
         self.add_header('Pragma', 'no-cache')
         if self.size is not None:
@@ -244,7 +252,9 @@ class FileResponse(Response):
         if self.content_type is None:
             self.content_type = self.guess_content_type(self.request.full_uri)            
         self.add_header('content-type', self.content_type)
-        self.request.start_response('200 Ok', self.headers)     
+        self.request.start_response('200 Ok', self.headers)
+        
+    def __iter__(self):  
         output = '\n'
         while len(output) is not 0:
             output = self.f.read(self.readsize)
@@ -269,9 +279,17 @@ class Response303(Response):
 class Response302(Response):
     status = '302 See Other'
     def __init__(self, uri):
-        self.headers = []
+        if not hasattr(self, 'headers'):
+            self.headers = []
         self.add_header('location', uri)
         self.body = 'Redirecting to a temp resource at '+str(uri)
+
+class Response304(Response):
+    status = '304 Not Modified'
+    def __init__(self, uri):
+        self.headers = []
+        self.add_header('location', uri)
+        self.body = ''
             
 class Response404(Response):
     status = '404 Not Found'

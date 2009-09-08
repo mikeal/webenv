@@ -1,4 +1,4 @@
-from webenv import Request, Response, Response404
+from webenv import Request, Response, Response404, Response500
 from urlparse import urlparse
 
 class RestApplication(object):
@@ -18,15 +18,23 @@ class RestApplication(object):
         elif environ['PATH_INFO'].startswith('http'):
             path = [p for p in urlparse(path).path.split('/') if len(p) is not 0]
         else:
-            raise Exception('Cannot read PATH_INFO '+request.full_uri)
+            raise Exception('Cannot read PATH_INFO '+request.full_uri+str(request.environ))
         
         if len(path) is 0:
             response = self.handler(request)
+            if response is None:    
+                print str(type(self))+".handler() did not return a response object"
+                response = Response500(str(type(self))+".handler() did not return a response object")
             response.request = request
+            response.start_response()
             return response
         else:
             response = self.rest_handler(request, *path)
+            if response is None:
+                print str(type(self))+".handler() did not return a response object"
+                response = Response500(str(type(self))+".rest_handler() did not return a response object")
             response.request = request
+            response.start_response()
             return response
             
     def rest_handler(self, request, *path):
