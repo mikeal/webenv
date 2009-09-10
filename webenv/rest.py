@@ -23,7 +23,6 @@ class RestApplication(object):
         if len(path) is 0:
             response = self.handler(request)
             if response is None:    
-                print str(type(self))+".handler() did not return a response object"
                 response = Response500(str(type(self))+".handler() did not return a response object")
             response.request = request
             response.start_response()
@@ -31,7 +30,6 @@ class RestApplication(object):
         else:
             response = self.rest_handler(request, *path)
             if response is None:
-                print str(type(self))+".handler() did not return a response object"
                 response = Response500(str(type(self))+".rest_handler() did not return a response object")
             response.request = request
             response.start_response()
