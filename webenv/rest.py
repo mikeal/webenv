@@ -3,12 +3,16 @@ from urlparse import urlparse
 
 class RestApplication(object):
     request_class = Request
-    def __init__(self):
+    def __init__(self, exclude_script_info=True):
         self.rest_resources = {}
+        self.exclude_script_info = exclude_script_info
     def __call__(self, environ, start_response):
         request = self.request_class(environ, start_response)
         
-        path = environ['SCRIPT_NAME'] + environ['PATH_INFO']
+        if self.exclude_script_info:
+            path = environ['PATH_INFO']
+        else:
+            path = environ['SCRIPT_NAME'] + environ['PATH_INFO']
         
         if len(path) is 0:
             path = '/'
